@@ -1,25 +1,36 @@
-# Zero trust project
+Zero Trust Project
 Zero Trust Authentication System — Project Documentation
-Overview
+📌 Overview
 
 This project demonstrates a lightweight Zero Trust Authentication Model using a Node.js backend (Express, JWT, bcryptjs) and a static HTML/CSS/JavaScript frontend.
-It follows the Zero Trust principles:
 
-Never trust, always verify
+It follows the core Zero Trust principles:
 
-Least-Privilege Access
+🔒 Never trust, always verify
 
-Role-Based Access Control (RBAC)
+🟦 Least-Privilege Access
 
-Session expiration (10–15 minutes)
+🧩 Role-Based Access Control (RBAC)
 
-Protected API routes
+⏳ Session expiration (10–15 minutes)
 
-Logging user actions
+🛡️ Protected API routes
 
-The system includes login, registration, protected pages, admin-only functionality, and session management.
+📄 Logging user actions
 
-Project Structure
+The system includes:
+
+Login
+
+Registration
+
+Protected pages
+
+Account page
+
+Admin-only functionality (view & delete users)
+
+📁 Project Structure
 /backend
   controllers/
   middleware/
@@ -27,6 +38,7 @@ Project Structure
   utils/
   users.json
   server.js
+
 /frontend
   index.html
   login.html
@@ -36,35 +48,39 @@ Project Structure
   css/style.css
   js/*.js
 
-📌 Backend Description (Node.js / Express)
+🖥️ Backend Description (Node.js / Express)
 Backend Responsibilities
 
-User registration and login
+User registration
 
-Password hashing with bcryptjs
+Login with password validation
 
-JWT token generation and verification
+Password hashing using bcryptjs
 
-Role-based authorization (admin / user)
+JWT token generation and validation
 
-Protected routes
+RBAC (admin/user)
 
-User listing and deletion (admin)
+Protected API routes
 
-Logging events into app.log
+Listing users (admin only)
 
-Reading/writing users from users.json
+Deleting users (admin only)
 
-Key Backend Files
+Logging actions (info/warn/error)
+
+Storing users in users.json
+
+📌 Key Backend Files
 File	Purpose
-server.js	Entry point for backend
-authController.js	Registration & login logic
-userController.js	User info, list, delete
-authMiddleware.js	JWT validation & RBAC
-users.js	User storage logic
-logger.js	Logging system
-generateToken.js	JWT generator
-User Format (users.json)
+server.js	Main backend entry point
+controllers/authController.js	Login & registration logic
+controllers/userController.js	User info, list, delete
+middleware/authMiddleware.js	JWT validation & RBAC guard
+utils/users.js	User storage (read/write users.json)
+utils/logger.js	Logging system
+utils/generateToken.js	JWT token generator
+🗂️ User Format (users.json)
 {
   "id": 1,
   "email": "admin@example.com",
@@ -72,102 +88,95 @@ User Format (users.json)
   "role": "admin"
 }
 
-📌 Frontend Description
+🌐 Frontend Description
 Frontend Responsibilities
 
-Sends login/registration requests
+Sends login/registration requests to backend
 
-Stores JWT, id, role, exp in localStorage
+Stores token, id, role, and exp in localStorage
 
-Page protection via checkAuth()
+Protects pages with checkAuth()
 
-Admin user management table
+Admin-only user table rendering
 
-UI messaging system
+Delete user buttons (admin)
 
-Protected routes & session timeout
+UI message system (showMessage)
 
-Key Frontend Files
+Session auto-expiration
+
+📌 Key Frontend Files
 File	Purpose
 index.html	Landing page
-login.html	Login form
+login.html	Login page
 register.html	Registration page
-protected.html	Admin/user protected page
-account.html	Profile page
-api.js	API client (postData/getData)
-auth.js	Login/register logic
-guard.js	Auth checking
-ui.js	UI message system
-style.css	Visual design
+protected.html	Admin/User protected page
+account.html	User profile page
+js/api.js	HTTP client (postData/getData)
+js/auth.js	Handles login & registration
+js/guard.js	Token expiration check
+js/ui.js	Message display system
+css/style.css	Application styling
 📌 API Endpoints
-Auth Routes
+🔑 Auth Routes
 Method	Endpoint	Description
 POST	/api/auth/register	Register user
 POST	/api/auth/login	Login user
-User Routes
+👤 User Routes
 Method	Endpoint	Role	Description
-GET	/api/users/me	user/admin	Get logged user data
+GET	/api/users/me	user/admin	Get current user
 GET	/api/users/all	admin	Get all users
 DELETE	/api/users/:id	admin	Delete user
-📌 Data Flow
-Registration/Login
+🔄 Data Flow (How It Works)
+1. Registration / Login
 
-User submits form
+User enters data on frontend
 
-Frontend sends request
+Frontend sends API request
 
-Backend validates input, hashes password, generates JWT
+Backend validates input
 
-Frontend saves token + metadata
+Backend hashes password (registration)
 
-Protected pages require valid token
+Backend generates JWT token
 
-Protected Routes
+Frontend stores token + role + id + expiration
 
-Backend validates token with middleware
+User is redirected to protected page
 
-Admin-only endpoints require admin role
+2. Protected Routes Workflow
 
-Expired tokens force logout
+Browser requests protected page
 
-📌 Environment Variables (.env)
+checkAuth() verifies session expiration
+
+Backend verifies JWT via middleware
+
+For admin endpoints → RBAC check
+
+If token invalid or expired → logout
+
+⚙️ Environment Variables (.env)
 PORT=4000
 JWT_SECRET=your_secret_key_here
 JWT_EXPIRES_IN=15m
 
-📌 Running the Project
-Install dependencies
+🚀 Running the Project
+1. Install Dependencies
 cd backend
 npm install
 
-Start backend
+2. Start Backend
 npm run dev
 
-Open frontend
+3. Open Frontend
 http://localhost:4000
 
-📌 Zero Trust Features Implemented
-
-✔ Least Privilege
-
-✔ Role-Based Access Control
-
-✔ JWT Authorization
-
-✔ Session Timeout
-
-✔ No Implicit Trust
-
-✔ Logging
-
-📌 Screenshots
-
-Place screenshots inside:
-
-/docs/screenshots/
-
-
-Then include in README like:
-
-![Login Page](docs/screenshots/login.png)
-![Protected Page](docs/screenshots/protected.png)
+🛡️ Zero Trust Features Implemented
+Feature	Status
+Least Privilege	✔
+Role-Based Access Control	✔
+JWT Authorization	✔
+Session Timeout	✔
+No Implicit Trust	✔
+Logging	✔
