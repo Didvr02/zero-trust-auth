@@ -70,10 +70,12 @@ css/style.css
 
 ---
 
-```md
-## 🌐 Frontend Description
+---
 
-### Frontend Responsibilities
+```md
+🌐 Frontend Description
+
+Frontend Responsibilities
 
 - Sends login and registration requests  
 - Stores **JWT token**, **role**, **id**, **expiration** in `localStorage`  
@@ -86,7 +88,7 @@ css/style.css
 
 ---
 
-## 📌 Key Frontend Files
+📌 Key Frontend Files
 
 | File | Purpose |
 |------|---------|
@@ -103,9 +105,9 @@ css/style.css
 
 ---
 
-## 📡 API Endpoints
+📡 API Endpoints
 
-### Authentication Endpoints
+Authentication Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -114,7 +116,7 @@ css/style.css
 
 ---
 
-### User Endpoints
+User Endpoints
 
 | Method | Endpoint | Role | Description |
 |--------|----------|------|-------------|
@@ -124,9 +126,9 @@ css/style.css
 
 ---
 
-## 🔄 Data Flow (How It Works)
+🔄 Data Flow (How It Works)
 
-### 1️⃣ Registration & Login Process
+ 1️⃣ Registration & Login Process
 
 1. User enters credentials  
 2. Frontend sends request to backend  
@@ -137,7 +139,7 @@ css/style.css
 
 ---
 
-### 2️⃣ Protected Page Workflow
+ 2️⃣ Protected Page Workflow
 
 - `checkAuth()` validates token  
 - If token expired → auto logout  
@@ -147,10 +149,10 @@ css/style.css
 
 ---
 
-## ⚙️ Environment Variables (`.env`)
+ ⚙️ Environment Variables (`.env`)
 
 
-## 🗂️ User Format (`users.json`)
+ 🗂️ User Format (`users.json`)
 
 ```json
 {
