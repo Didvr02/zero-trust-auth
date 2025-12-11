@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Protected — Users</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; background:#f3f7f5; }
+    .container { max-width: 820px; margin: 32px auto; padding: 18px; background: #fff; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    h2 { color: #0b75e6; margin:0 0 8px 0; }
+    .small { font-size: 0.95rem; color: #555; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; background:#fff; }
+    th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
+    button { padding: 6px 10px; cursor: pointer; border-radius: 6px; border: 0; background:#0b75e6; color: #fff; }
+    button.secondary { background: #e0e6ef; color: #222; }
+    .msg { padding: 8px; border-radius: 6px; margin-top: 12px; display: none; }
+    .msg.ok { background:#d4edda; color:#155724; border:1px solid #c3e6cb; display:block; }
+    .msg.err { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; display:block; }
+    .controls { margin:12px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Protected Page — Users</h2>
+    <p class="small">Only logged in users can see this page.</p>
+
+    <section id="admin-feature">
+      <h3>Admin panel — список пользователей</h3>
+      <p id="roleHint" class="small">Проверка роли...</p>
+
+      <div class="controls">
+        <button id="loadUsersBtn">Load All Users</button>
+        <button id="refreshBtn" class="secondary" style="margin-left:8px; display:none;">Refresh</button>
+      </div>
+
+      <div id="usersMsg" class="msg" role="status"></div>
+      <div id="usersList"></div>
+    </section>
+
+    <div style="margin-top:18px;">
+      <button id="logoutBtn" class="secondary">Logout</button>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    const API_BASE = 'http://localhost:4000/api';
+    const el = (id) => document.getElementById(id);
+
+    const usersList = el('usersList');
+    const usersMsg = el('usersMsg');
+    const loadBtn = el('loadUsersBtn');
+    const refreshBtn = el('refreshBtn');
+    const roleHint = el('roleHint');
+
+    function showMsg(text, ok = true) {
+      usersMsg.textContent = text;
+      usersMsg.className = 'msg ' + (ok ? 'ok' : 'err');
+    }
+    function clearMsg() {
+      usersMsg.textContent = '';
+      usersMsg.className = 'msg';
+    }
+
+    const token = localStorage.getItem('token');
+    const role = (localStorage.getItem('role') || '').trim();
+    const exp = localStorage.getItem('exp');
+
+    if (!token || !exp || Date.now() > Number(exp)) {
+      localStorage.clear();
+      window.location.href = 'login.html';
+      return;
+    }
+
+    roleHint.innerHTML = `Current role: <strong>${role || 'unknown'}</strong>`;
+
+    if (role === 'admin') {
+      loadBtn.style.display = 'inline-block';
+    } else {
+      loadBtn.style.display = 'none';
+      showMsg('Доступ к списку пользователей доступен только роли admin.', false);
+    }
+
+    async function fetchUsers() {
+      clearMsg();
+      usersList.innerHTML = 'Загрузка...';
+      loadBtn.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/users/all`, {
+          method: 'GET',
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          credentials: 'include'
+        });
+
+        let body = null;
+        try { body = await res.json(); } catch (e) { body = null; }
+
+        if (!res.ok) {
+          const message = (body && (body.message || body.error)) || `HTTP ${res.status}`;
+          usersList.innerHTML = '';
+          showMsg(`Ошибка загрузки: ${message}`, false);
+          loadBtn.disabled = false;
+          return;
+        }
+
+        if (!Array.isArray(body)) {
+          usersList.innerHTML = '';
+          showMsg('Неверный формат ответа с сервера (ожидался массив).', false);
+          console.log('DEBUG /users/all body:', body);
+          loadBtn.disabled = false;
+          return;
+        }
+
+        renderTable(body);
+        showMsg(`Успешно загружено ${body.length} пользователей.`, true);
+        refreshBtn.style.display = 'inline-block';
+      } catch (err) {
+        usersList.innerHTML = '';
+        showMsg('Network error: ' + err.message, false);
+        console.error(err);
+      } finally {
+        loadBtn.disabled = false;
+      }
+    }
+
+    function renderTable(users) {
+      if (!users || users.length === 0) {
+        usersList.innerHTML = '<p>Пользователей не найдено.</p>';
+        return;
+      }
+
+      // Build table with inline styles to avoid external CSS hiding it
+      const table = document.createElement('table');
+      table.style.cssText = 'width:100%;border-collapse:collapse;background:#fff;font-family:Arial,Helvetica,sans-serif;border:1px solid #eee;';
+
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr>
+          <th style="padding:8px;border-bottom:2px solid #ddd;text-align:left;background:#f7f9fc">ID</th>
+          <th style="padding:8px;border-bottom:2px solid #ddd;text-align:left;background:#f7f9fc">Email</th>
+          <th style="padding:8px;border-bottom:2px solid #ddd;text-align:left;background:#f7f9fc">Role</th>
+          <th style="padding:8px;border-bottom:2px solid #ddd;text-align:left;background:#f7f9fc">Actions</th>
+        </tr>
+      `;
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+
+      users.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="padding:8px;border-bottom:1px solid #eee;vertical-align:middle">${String(u.id)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;vertical-align:middle">${String(u.email)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;vertical-align:middle">${String(u.role)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;vertical-align:middle"></td>
+        `;
+
+        const actionsTd = tr.querySelector('td:last-child');
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.style.cssText = 'padding:6px 10px;background:#ff5c5c;color:#fff;border:none;border-radius:5px;cursor:pointer;margin-right:8px';
+
+        const myId = localStorage.getItem('id') || (function(){ try{ const p=JSON.parse(atob((token||'').split('.')[1]||'{}')); return p.id }catch(e){return null} })();
+
+        if (String(u.id) === String(myId)) {
+          delBtn.disabled = true;
+          delBtn.title = 'Cannot delete yourself';
+          delBtn.style.opacity = '0.6';
+        } else {
+          delBtn.addEventListener('click', async () => {
+            if (!confirm(`Удалить ${u.email} (ID ${u.id})?`)) return;
+            try {
+              const r = await fetch(`${API_BASE}/users/${u.id}`, {
+                method: 'DELETE',
+                cache: 'no-store',
+                headers: {'Content-Type':'application/json','Authorization': `Bearer ${token}`},
+                credentials: 'include'
+              });
+              const j = await r.json().catch(()=>null);
+              if (!r.ok) { showMsg('Delete failed: ' + (j && j.message ? j.message : r.status), false); return; }
+              showMsg(`Пользователь (ID: ${u.id}) удалён.`, true);
+              // remove row
+              tr.remove();
+            } catch (e) {
+              console.error(e);
+              showMsg('Network error: ' + e.message, false);
+            }
+          });
+        }
+
+        actionsTd.appendChild(delBtn);
+
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      usersList.innerHTML = '';
+      usersList.appendChild(table);
+    }
+
+    loadBtn.addEventListener('click', fetchUsers);
+    refreshBtn.addEventListener('click', fetchUsers);
+    el('logoutBtn').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+
+    // intentionally DO NOT auto-load: user requested manual click
+    // if (role === 'admin') fetchUsers();
+  })();
+  </script>
+</body>
+</html>

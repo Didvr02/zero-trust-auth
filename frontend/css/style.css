@@ -1,0 +1,134 @@
+/* frontend/css/style.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    margin-top: 50px;
+}
+
+h2, h3 {
+    color: #007bff;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button, .button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .button:hover {
+    background-color: #0056b3;
+}
+
+.secondary {
+    background-color: #6c757d;
+}
+
+.secondary:hover {
+    background-color: #5a6268;
+}
+
+.small {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: none; /* Скрыто по умолчанию */
+}
+
+/* Стили для ссылок навигации */
+#auth-links, #protected-links {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul li {
+    background: #e9f7ef;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* frontend/css/style.css - ДОБАВИТЬ В КОНЕЦ */
+
+/* Стили для #protected-links из index.html */
+#protected-links {
+    margin-top: 20px;
+}
+
+/* Стили для #message из login.html, register.html, protected.html */
+#message, #usersList {
+    /* Добавляем базовое скрытие для элемента #message и #usersList, 
+       чтобы JS управлял его отображением */
+    display: none; 
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    /* Базовые стили для ошибки/успеха будут применены через JS */
+}
+
+/* Стили для #loadUsersBtn из protected.html */
+#loadUsersBtn {
+    /* Добавляем базовое скрытие для кнопки, чтобы JS показывал ее только админам */
+    display: none; 
+}

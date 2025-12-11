@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Trust Company System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Zero Trust Company System</h1>
+            <p>Implement the principle: Never Trust, Always Verify.</p>
+        </header>
+
+        <section id="features">
+            <h3>Key Zero Trust Principles Implemented:</h3>
+            <ul>
+                <li>🔐 **Role-based Access Control (RBAC):** Users and Admins have different access levels.</li>
+                <li>🔑 **Least-Privilege Access:** Admin role is required for sensitive routes (e.g., viewing all users).</li>
+                <li>⏳ **Session Timeout:** Automatic logout after **15 minutes** (via JWT expiration and client-side check).</li>
+                <li>🛡️ **Authorization Defense:** All protected routes require a valid JWT.</li>
+            </ul>
+        </section>
+
+        <section id="auth-links">
+            <p>Ready to start?</p>
+            <a href="login.html" class="button">Login</a>
+            <a href="register.html" class="button secondary">Register</a>
+        </section>
+
+        <section id="protected-links"> 
+            <p>Access your application:</p>
+            <a href="protected.html" class="button small">Protected Page (User/Admin)</a>
+            <a href="account.html" class="button small">Account Details (User/Admin)</a>
+        </section>
+    </div>
+</body>
+</html>

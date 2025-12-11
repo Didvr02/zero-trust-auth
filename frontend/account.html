@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - Zero Trust App</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Account Page</h2>
+        <div id="profile">
+          <p>Loading profile...</p>
+        </div>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/guard.js"></script>
+    <script src="js/ui.js"></script> 
+    
+    <script>
+        if (!checkAuth()) {
+             // Если токена нет/истек, перенаправляем на страницу входа
+             window.location.href = 'login.html';
+             throw new Error('Not authenticated, redirecting.'); 
+        }
+
+        // API_URL теперь доступен глобально из api.js
+        const profileDiv = document.getElementById('profile');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const user = await getData(`${API_URL}/users/me`, token);
+                
+                profileDiv.innerHTML = `
+                    <h3>Your Profile</h3>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Role:</strong> <span class="role-${user.role}">${user.role}</span></p>
+                `;
+            } catch (err) {
+                showMessage('profile', `Error loading profile: ${err.message}`, true);
+                console.error(err);
+            }
+        }
+        
+        loadProfile();
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
