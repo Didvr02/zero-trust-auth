@@ -80,6 +80,7 @@ css/style.css
   "role": "admin"
 }
 
+---
 
 ## 🌐 Frontend Description
 Frontend Responsibilities
