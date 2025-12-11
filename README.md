@@ -82,21 +82,95 @@ css/style.css
 
 ---
 
+
+Теперь я **добавляю продолжение в этом же EXACT стиле**.
+
+---
+
+# ✅ Готовое ПРОДОЛЖЕНИЕ README.md (в чистом Markdown, без комментариев)
+
+Скопируй и вставь **сразу после твоего блока `User Format`**.
+
+---
+
+```md
 ## 🌐 Frontend Description
-Frontend Responsibilities
 
-Sends login/registration requests
+### Frontend Responsibilities
 
-Stores token, id, role, and exp in localStorage
+- Sends login and registration requests  
+- Stores **JWT token**, **role**, **id**, **expiration** in `localStorage`  
+- Protects pages using `checkAuth()`  
+- Verifies token expiration and logs user out automatically  
+- Displays dynamic UI messages  
+- Renders admin-only user table  
+- Allows deleting users (admin role only)  
+- Loads personal account information  
 
-Protects pages with checkAuth()
+---
 
-Admin-only user table rendering
+## 📌 Key Frontend Files
 
-Delete user buttons (admin only)
+| File | Purpose |
+|------|---------|
+| `index.html` | Landing page |
+| `login.html` | Login form |
+| `register.html` | User registration page |
+| `protected.html` | Protected page with admin dashboard |
+| `account.html` | User account page |
+| `js/api.js` | API helper for GET/POST requests |
+| `js/auth.js` | Handles login and registration |
+| `js/guard.js` | Verifies token & handles auto-logout |
+| `js/ui.js` | Displays messages and UI alerts |
+| `css/style.css` | Main styling |
 
-UI message system (showMessage)
+---
 
-Session auto-expiration
-js/*.js
+## 📡 API Endpoints
+
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| **POST** | `/api/auth/register` | Register a new user |
+| **POST** | `/api/auth/login` | Login user and receive JWT |
+
+---
+
+### User Endpoints
+
+| Method | Endpoint | Role | Description |
+|--------|----------|------|-------------|
+| **GET** | `/api/users/me` | user/admin | Get current user data |
+| **GET** | `/api/users/all` | admin | Get list of users |
+| **DELETE** | `/api/users/:id` | admin | Delete user by ID |
+
+---
+
+## 🔄 Data Flow (How It Works)
+
+### 1️⃣ Registration & Login Process
+
+1. User enters credentials  
+2. Frontend sends request to backend  
+3. Backend hashes password using bcryptjs  
+4. Backend generates JWT token  
+5. Token + role + id + expiration are saved in `localStorage`  
+6. User is redirected to protected page  
+
+---
+
+### 2️⃣ Protected Page Workflow
+
+- `checkAuth()` validates token  
+- If token expired → auto logout  
+- Backend validates JWT via middleware  
+- Admin-only endpoints check user role  
+- Unauthorized requests are blocked  
+
+---
+
+## ⚙️ Environment Variables (`.env`)
+
+
 
