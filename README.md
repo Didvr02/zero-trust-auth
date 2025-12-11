@@ -70,29 +70,6 @@ css/style.css
 
 ---
 
-## 🗂️ User Format (`users.json`)
-
-```json
-{
-  "id": 1,
-  "email": "admin@example.com",
-  "password_hash": "$2b$10$...",
-  "role": "admin"
-}
-
----
-
-
-Теперь я **добавляю продолжение в этом же EXACT стиле**.
-
----
-
-# ✅ Готовое ПРОДОЛЖЕНИЕ README.md (в чистом Markdown, без комментариев)
-
-Скопируй и вставь **сразу после твоего блока `User Format`**.
-
----
-
 ```md
 ## 🌐 Frontend Description
 
@@ -172,5 +149,17 @@ css/style.css
 
 ## ⚙️ Environment Variables (`.env`)
 
+
+## 🗂️ User Format (`users.json`)
+
+```json
+{
+  "id": 1,
+  "email": "admin@example.com",
+  "password_hash": "$2b$10$...",
+  "role": "admin"
+}
+
+---
 
 
